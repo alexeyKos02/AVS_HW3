@@ -40,26 +40,26 @@ main:
 	lea	rdx, .LC1[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
-	call	strcmp@PLT
-	test	eax, eax
+	call	strcmp@PLT					# strcmp(argv[1], "-c")
+	test	eax, eax					# strcmp(argv[1], "-c") == 0 
 	jne	.L2
 	lea	rax, .LC2[rip]
 	mov	rdi, rax
-	call	puts@PLT
+	call	puts@PLT					# printf("Enter number\n");
 	lea	rax, -40[rbp]
 	mov	rsi, rax
 	lea	rax, .LC3[rip]
 	mov	rdi, rax
 	mov	eax, 0
-	call	__isoc99_scanf@PLT
+	call	__isoc99_scanf@PLT				# scanf("%lf", &number);
 	movsd	xmm1, QWORD PTR -40[rbp]
 	pxor	xmm0, xmm0
-	comisd	xmm0, xmm1
+	comisd	xmm0, xmm1					# number < 0
 	jbe	.L20
 	lea	rax, .LC5[rip]
 	mov	rdi, rax
 	mov	eax, 0
-	call	printf@PLT
+	call	printf@PLT					# printf("Error");
 	mov	eax, 0
 	jmp	.L17
 .L20:
@@ -73,7 +73,7 @@ main:
 	lea	rax, .LC6[rip]
 	mov	rdi, rax
 	mov	eax, 1
-	call	printf@PLT
+	call	printf@PLT					# printf("Answer = %lf\n", sq);
 	jmp	.L6
 .L2:
 	mov	rax, QWORD PTR -64[rbp]
@@ -82,15 +82,15 @@ main:
 	lea	rdx, .LC7[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
-	call	strcmp@PLT
-	test	eax, eax
+	call	strcmp@PLT					# strcmp(argv[1], "-f")
+	test	eax, eax					# strcmp(argv[1], "-f") == 0 
 	jne	.L7
-	cmp	DWORD PTR -52[rbp], 4
+	cmp	DWORD PTR -52[rbp], 4				# args != 4
 	je	.L8
 	lea	rax, .LC5[rip]
 	mov	rdi, rax
 	mov	eax, 0
-	call	printf@PLT
+	call	printf@PLT					# printf("Error");
 	mov	eax, 0
 	jmp	.L17
 .L8:
@@ -136,15 +136,15 @@ main:
 	mov	eax, 0
 .L12:
 	mov	QWORD PTR -16[rbp], rax
-	cmp	QWORD PTR -8[rbp], 0
+	cmp	QWORD PTR -8[rbp], 0				# in == NULL 
 	je	.L13
-	cmp	QWORD PTR -16[rbp], 0
+	cmp	QWORD PTR -16[rbp], 0				# out == NULL 
 	jne	.L14
 .L13:
 	lea	rax, .LC5[rip]
 	mov	rdi, rax
 	mov	eax, 0
-	call	printf@PLT
+	call	printf@PLT					# printf("Error");
 	mov	eax, 0
 	jmp	.L17
 .L14:
@@ -154,23 +154,23 @@ main:
 	mov	rsi, rcx
 	mov	rdi, rax
 	mov	eax, 0
-	call	__isoc99_fscanf@PLT
+	call	__isoc99_fscanf@PLT				# fscanf(in, "%lf", &number);
 	movsd	xmm1, QWORD PTR -40[rbp]
 	pxor	xmm0, xmm0
-	comisd	xmm0, xmm1
+	comisd	xmm0, xmm1					# number < 0
 	jbe	.L21
 	lea	rax, .LC5[rip]
 	mov	rdi, rax
 	mov	eax, 0
-	call	printf@PLT
+	call	printf@PLT					#  printf("Error");
 	mov	eax, 0
 	jmp	.L17
 .L21:
 	mov	rax, QWORD PTR -40[rbp]
-	movq	xmm0, rax
-	call	Sqrt@PLT
-	movq	rax, xmm0
-	mov	QWORD PTR -24[rbp], rax
+	movq	xmm0, rax					# передает в xmm0 значение number для функции Sqrt
+	call	Sqrt@PLT					# Sqrt(number)
+	movq	rax, xmm0					
+	mov	QWORD PTR -24[rbp], rax				# double sq = Sqrt(number);
 	mov	rdx, QWORD PTR -24[rbp]
 	mov	rax, QWORD PTR -16[rbp]
 	movq	xmm0, rdx
@@ -178,13 +178,13 @@ main:
 	mov	rsi, rdx
 	mov	rdi, rax
 	mov	eax, 1
-	call	fprintf@PLT
+	call	fprintf@PLT					# fprintf(out, "%lf\n", sq);
 	jmp	.L6
 .L7:
 	lea	rax, .LC11[rip]
 	mov	rdi, rax
 	mov	eax, 0
-	call	printf@PLT
+	call	printf@PLT					#  printf("incorrect input");
 .L6:
 	mov	eax, 0
 .L17:
