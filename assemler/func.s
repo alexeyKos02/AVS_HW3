@@ -6,8 +6,8 @@
 	.type	degree, @object
 	.size	degree, 4
 degree:
-	.long	5
-	.local	A
+	.long	5					# degree = 5
+	.local	A					static A
 	.comm	A,8,8
 	.section	.rodata
 .LC1:
@@ -41,7 +41,7 @@ diff:
 	cvtsi2sd	xmm0, rax
 	addsd	xmm0, xmm1
 	cvttsd2si	rax, xmm0
-	mov	QWORD PTR -8[rbp], rax
+	mov	QWORD PTR -8[rbp], rax				# tot1 = st.tv_sec *10e8 +st.tv_nsec;
 	mov	rax, QWORD PTR -48[rbp]
 	pxor	xmm1, xmm1
 	cvtsi2sd	xmm1, rax
@@ -52,7 +52,7 @@ diff:
 	cvtsi2sd	xmm0, rax
 	addsd	xmm0, xmm1
 	cvttsd2si	rax, xmm0
-	mov	QWORD PTR -16[rbp], rax
+	mov	QWORD PTR -16[rbp], rax				# tot2 = end.tv_sec *10e8 +end.tv_nsec;
 	mov	rax, QWORD PTR -8[rbp]
 	sub	rax, QWORD PTR -16[rbp]
 	lea	rdx, .LC1[rip]
@@ -114,7 +114,7 @@ Sqrt:
 	sub	rsp, 80
 	movsd	QWORD PTR -72[rbp], xmm0
 	movsd	xmm0, QWORD PTR -72[rbp]
-	movsd	QWORD PTR A[rip], xmm0
+	movsd	QWORD PTR A[rip], xmm0				# A = number
 	lea	rax, -48[rbp]
 	mov	rsi, rax
 	mov	edi, 1
@@ -125,16 +125,16 @@ Sqrt:
 	movq	xmm0, rax
 	call	pow@PLT
 	movq	rax, xmm0
-	mov	QWORD PTR -16[rbp], rax
+	mov	QWORD PTR -16[rbp], rax				# corr = pow(number, 1.0 / 5);
 	movsd	xmm0, QWORD PTR -16[rbp]
-	movsd	xmm1, QWORD PTR .LC5[rip]
-	divsd	xmm0, xmm1
-	movsd	QWORD PTR -24[rbp], xmm0
+	movsd	xmm1, QWORD PTR .LC5[rip]			# 1/1000
+	divsd	xmm0, xmm1					# corr /1000
+	movsd	QWORD PTR -24[rbp], xmm0			# кладем в стек, аналогично кладем в переменную eps
 	mov	rax, QWORD PTR .LC3[rip]
 	movq	xmm0, rax
 	call	Alg
 	movq	rax, xmm0
-	mov	QWORD PTR -8[rbp], rax
+	mov	QWORD PTR -8[rbp], rax				# alg = Alg(1);
 	jmp	.L5
 .L6:
 	mov	rax, QWORD PTR -8[rbp]
