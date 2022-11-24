@@ -9,15 +9,30 @@
 
 Если вам интересны комментарии:
 ```sh
-	.file	"main.c"
-	.intel_syntax noprefix
-	.text
-	.local	START							# строка в которой ищем подстроку.
-	.comm	START,1000,32					    	# выделение памяти на строку.
-	.local	SEARCHABLE						# искомая подстрока.
-	.comm	SEARCHABLE,1000,32					# выделение памяти в подстроку.
-	.globl	randomDate						# объявление функции рандомной генерации данных.
-	.type	randomDate, @function
+	main:
+	...
+	movsd	QWORD PTR -40[rbp], xmm0			# кладем значение number = -1 в стек
+	...
+	.L20:
+	mov	rax, QWORD PTR -40[rbp]
+	movq	xmm0, rax
+	call	Sqrt@PLT
+	movq	rax, xmm0					# после вызова функции в rax кладется возращаемое значение
+	mov	QWORD PTR -32[rbp], rax				# возвращенное значение кладется в стек. Соответсвует  double sq = Sqrt(number);
+	...
+	.L8:
+	mov	rax, QWORD PTR -64[rbp]				#
+	add	rax, 16						#
+	mov	rax, QWORD PTR [rax]				#
+	lea	rdx, .LC8[rip]					#
+	mov	rsi, rdx					#
+	mov	rdi, rax					#
+	call	fopen@PLT					# fopen(argv[2], "r"). Все пустые выше - выполняют данную команду в совокупности 
+	test	rax, rax					# fopen(argv[2], "r") != NULL
+	je	.L9						# возвращает NULL			
+	...
+	call	fopen@PLT					# fopen(argv[2], "r")			
+	jmp	.L10
  ```
  ## Тестирование
  Тесты расположены в данной [директории](/tests/).
