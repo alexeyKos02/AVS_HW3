@@ -32,8 +32,8 @@ main:
 	sub	rsp, 64
 	mov	DWORD PTR -52[rbp], edi
 	mov	QWORD PTR -64[rbp], rsi
-	movsd	xmm0, QWORD PTR .LC0[rip]
-	movsd	QWORD PTR -40[rbp], xmm0
+	movsd	xmm0, QWORD PTR .LC0[rip]			
+	movsd	QWORD PTR -40[rbp], xmm0			# кладем значение number = -1 в стек
 	mov	rax, QWORD PTR -64[rbp]
 	add	rax, 8
 	mov	rax, QWORD PTR [rax]
@@ -66,8 +66,8 @@ main:
 	mov	rax, QWORD PTR -40[rbp]
 	movq	xmm0, rax
 	call	Sqrt@PLT
-	movq	rax, xmm0
-	mov	QWORD PTR -32[rbp], rax
+	movq	rax, xmm0					# после вызова функции в rax кладется возращаемое значение
+	mov	QWORD PTR -32[rbp], rax				# возвращенное значение кладется в стек. Соответсвует  double sq = Sqrt(number);
 	mov	rax, QWORD PTR -32[rbp]
 	movq	xmm0, rax
 	lea	rax, .LC6[rip]
@@ -94,25 +94,25 @@ main:
 	mov	eax, 0
 	jmp	.L17
 .L8:
+	mov	rax, QWORD PTR -64[rbp]				#
+	add	rax, 16						#
+	mov	rax, QWORD PTR [rax]				#
+	lea	rdx, .LC8[rip]					#
+	mov	rsi, rdx					#
+	mov	rdi, rax					#
+	call	fopen@PLT					# fopen(argv[2], "r"). Все пустые выше - выполняют данную команду в совокупности 
+	test	rax, rax					# fopen(argv[2], "r") != NULL
+	je	.L9						# возвращает NULL			
 	mov	rax, QWORD PTR -64[rbp]
 	add	rax, 16
 	mov	rax, QWORD PTR [rax]
-	lea	rdx, .LC8[rip]
+	lea	rdx, .LC8[rip]					
 	mov	rsi, rdx
 	mov	rdi, rax
-	call	fopen@PLT
-	test	rax, rax
-	je	.L9
-	mov	rax, QWORD PTR -64[rbp]
-	add	rax, 16
-	mov	rax, QWORD PTR [rax]
-	lea	rdx, .LC8[rip]
-	mov	rsi, rdx
-	mov	rdi, rax
-	call	fopen@PLT
+	call	fopen@PLT					# fopen(argv[2], "r")			
 	jmp	.L10
 .L9:
-	mov	eax, 0
+	mov	eax, 0						
 .L10:
 	mov	QWORD PTR -8[rbp], rax
 	mov	rax, QWORD PTR -64[rbp]
@@ -121,16 +121,16 @@ main:
 	lea	rdx, .LC9[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
-	call	fopen@PLT
-	test	rax, rax
-	je	.L11
+	call	fopen@PLT					# fopen(argv[3], "w")
+	test	rax, rax					# fopen(argv[3], "w") != NULL
+	je	.L11						# возращает NULL
 	mov	rax, QWORD PTR -64[rbp]
 	add	rax, 24
 	mov	rax, QWORD PTR [rax]
 	lea	rdx, .LC9[rip]
 	mov	rsi, rdx
 	mov	rdi, rax
-	call	fopen@PLT
+	call	fopen@PLT					# fopen(argv[3], "w")
 	jmp	.L12
 .L11:
 	mov	eax, 0
